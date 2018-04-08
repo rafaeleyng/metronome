@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
 
+import times from 'lodash/times'
+
 class App extends Component {
   state = {
     isPlaying: false,
@@ -70,6 +72,14 @@ class App extends Component {
     )
   }
 
+  renderMetronome = () => {
+    const { beats } = this.state
+    return (
+      times(beats, () => null)
+        .map((value, i) => (<span style={{ marginRight: '4px' }} key={i}>{i === 0 ? '<beat>' : 'beat'}</span>))
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -78,6 +88,8 @@ class App extends Component {
         {this.renderTempo()}
         <hr/>
         {this.renderBeats()}
+        <hr/>
+        {this.renderMetronome()}
       </div>
     );
   }
