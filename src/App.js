@@ -1,5 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import times from 'lodash/times'
+import { Row, Col } from 'reactstrap'
+import { FaPlay, FaPause } from 'react-icons/lib/fa'
 
 import './App.css';
 
@@ -55,7 +57,7 @@ function metronomeFactory(cb, {
       nextBeatTime += secondsPerBeat;    // Add beat length to last beat time
 
       beatIndex++;    // Advance the beat number, wrap to zero
-      if (beatIndex == beats) {
+      if (beatIndex === beats) {
           beatIndex = 0;
       }
   }
@@ -112,7 +114,7 @@ function metronomeFactory(cb, {
       timerWorker = new TimerWorker();
 
       timerWorker.onmessage = function(data) {
-        if (data == "tick") {
+        if (data === "tick") {
           scheduler();
         }
       };
@@ -134,10 +136,6 @@ class App extends Component {
     isPlaying: false,
     beats: 4,
     tempo: 120,
-  }
-
-  constructor(props) {
-    super(props)
   }
 
   componentDidMount() {
@@ -187,65 +185,101 @@ class App extends Component {
   renderTogglePlay = () => {
     const { isPlaying } = this.state
     return (
-      <button
-        type="button"
-        onClick={this.handleTogglePlay}
-      >
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
+      <Row>
+        <Col
+          md={{size: 4, offset: 4}}
+          className="buttonCircle text-center"
+          onClick={this.handleTogglePlay}
+        >
+          {isPlaying ? < FaPause size="60%" className="center" color="#DD8836" /> : < FaPlay size="60%" className="center"  color="#DD8836"/>}
+        </Col>
+      </Row>
     )
   }
 
   renderTempo = () => {
     return (
-      <Fragment>
-        <input
-          type="range"
-          value={this.state.tempo}
-          min="40"
-          max="200"
-          step="1"
-          onChange={this.handleTempoChange}
-        />
-        <p>Tempo: {this.state.tempo}</p>
-      </Fragment>
+      <Row>
+        <Col md={{size: 8, offset: 2}} className="text-center">
+          <p>
+            <span className="subTitleRange">Tempo</span>
+            &nbsp;&nbsp;&nbsp;
+            <span className="titleRange">{this.state.tempo}</span>
+          </p>
+          <input
+            type="range"
+            value={this.state.tempo}
+            min="40"
+            max="200"
+            className="inputRange"
+            step="1"
+            onChange={this.handleTempoChange}
+          />
+        </Col>
+      </Row>
     )
   }
 
   renderBeats = () => {
     return (
-      <Fragment>
+      <Row>
+        <Col md={{size: 8, offset: 2}} className="text-center">
+        <p>
+          <span className="subTitleRange">Beats</span>
+          &nbsp;&nbsp;&nbsp;
+          <span className="titleRange">{this.state.beats}</span>
+        </p>
         <input
           type="range"
           value={this.state.beats}
+          className="inputRange"
           min="2"
-          max="7"
+          max="12"
           onChange={this.handleBeatsChange}
         />
-        <p>Beats: {this.state.beats}</p>
-      </Fragment>
+        </Col>
+      </Row>
     )
   }
 
   renderMetronome = () => {
     const { beats, currentBeatIndex } = this.state
     return (
-      times(beats, () => null)
-        .map((value, i) => (<span style={{ marginRight: '4px' }} className={(currentBeatIndex === i) ? 'current' : ''} key={i}>{i === 0 ? '<beat>' : 'beat'}</span>))
+        times(beats, () => null)
+          .map((value, i) =>(
+            <Col md={{size: 1}} sm={{size: 1}} className="beatCol"><div className={(currentBeatIndex === i) ? 'beat current' : 'beat'} key={i}></div></Col>
+          ))
     )
   }
 
   render() {
     return (
-      <div className="App">
-        {this.renderTogglePlay()}
-        <hr/>
-        {this.renderTempo()}
-        <hr/>
-        {this.renderBeats()}
-        <hr/>
-        {this.renderMetronome()}
-      </div>
+        <Row id="subRoot">
+          <Col md={{size:6, offset:3}} xs={{size:12}} className="app">
+            <Row className="line">
+              <Col md={{size: 12}}>
+                {this.renderTogglePlay()}
+              </Col>
+            </Row>
+            <Row className="line">
+              <Col md={{size: 10, offset: 1}} xs={{size: 12}}>
+                <Row>
+                  {this.renderMetronome()}
+                </Row>
+              </Col>
+            </Row>
+            <Row className="line">
+              <Col md={{size: 12}}>
+              {this.renderBeats()}
+              </Col>
+            </Row>
+            <Row className="line">
+              <Col md={{size: 12}}>
+              {this.renderTempo()}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
     );
   }
 }
