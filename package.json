@@ -2,6 +2,7 @@
   "name": "metronome",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://rafaeleyng.github.io/metronome",
   "dependencies": {
     "lodash": "4.17.5",
     "normalize.css": "8.0.0",
