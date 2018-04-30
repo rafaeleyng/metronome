@@ -7,6 +7,8 @@ import TogglePlay from './TogglePlay'
 
 import metronomeFactory from '../../../metronome/metronomeFactory'
 
+import metronomeConfig from '../../../config/metronome'
+
 class Metronome extends Component {
   state = {
     currentBeatIndex: null,
@@ -26,6 +28,58 @@ class Metronome extends Component {
     this.setState({
       metronome: metronomeFactory(this.handleMetronomeTick, options),
     })
+
+    document.addEventListener('keydown', this.handleKeyDown, false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  handleKeyDown = (e) => {
+    const SPACE = 32
+    const LEFT = 37
+    const UP = 38
+    const RIGHT = 39
+    const DOWN = 40
+
+    const { beats, tempo } = this.state
+
+    switch (e.keyCode) {
+      case SPACE: {
+        this.handleTogglePlay()
+        break
+      }
+      case LEFT: {
+        if (tempo > metronomeConfig.tempo.min) {
+          this.handleTempoChange(tempo - 1)
+        }
+        break
+      }
+      case RIGHT: {
+        if (tempo < metronomeConfig.tempo.max) {
+          this.handleTempoChange(tempo + 1)
+        }
+        break
+      }
+      case DOWN: {
+        if (beats > metronomeConfig.beats.min) {
+          this.handleBeatsChange(beats - 1)
+        }
+        break
+      }
+      case UP: {
+        if (beats < metronomeConfig.beats.max) {
+          this.handleBeatsChange(beats + 1)
+        }
+        break
+      }
+      default: {
+        return
+      }
+    }
+
+    e.preventDefault()
   }
 
   handleMetronomeTick = ({ beatIndex }) => {
@@ -80,7 +134,7 @@ class Metronome extends Component {
           <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
         </div>
         <div>
-          <Beats beats={parseInt(beats, 10)} current={currentBeatIndex} />
+          <Beats beats={beats} current={currentBeatIndex} />
         </div>
         <div>
           <BeatsSlider onChange={this.handleBeatsChange} value={beats} />

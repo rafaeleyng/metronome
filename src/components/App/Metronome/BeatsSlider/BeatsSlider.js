@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 
 import Slider from '../common/Slider'
 
+import metronomeConfig from '../../../../config/metronome'
+
 const BeatsSlider = ({ value, onChange }) => (
   <div className='BeatsSlider'>
     <Slider
       label='Beats'
-      max={7}
-      min={2}
+      max={metronomeConfig.beats.max}
+      min={metronomeConfig.beats.min}
       onChange={onChange}
       value={value}
     />
