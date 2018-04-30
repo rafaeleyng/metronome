@@ -38,11 +38,18 @@ class Metronome extends Component {
     this.setState({
       beats,
     }, () => {
-      this.state.metronome.setBeats(beats)
+      const {
+        isPlaying,
+        metronome,
+      } = this.state
 
-      // TODO refatorar esse restart do play
-      this.state.metronome.togglePlay(false)
-      this.state.metronome.togglePlay(true)
+      metronome.setBeats(beats)
+
+      if (isPlaying) {
+        // TODO refatorar esse restart do play
+        metronome.togglePlay(false)
+        metronome.togglePlay(true)
+      }
     })
   }
 
@@ -71,32 +78,32 @@ class Metronome extends Component {
     } = this.state
 
     return (
-        <Row id="subRoot">
-          <Col md={{size:6, offset:3}} xs={{size:12}} className="app">
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 10, offset: 1}} xs={{size: 12}}>
-                <Row>
-                  <Beats beats={parseInt(beats, 10)} current={currentBeatIndex} />
-                </Row>
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <TempoSlider onChange={this.handleTempoChange} value={tempo} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+      <Row id="subRoot">
+        <Col md={{size:6, offset:3}} xs={{size:12}} className="app">
+          <Row className="line">
+            <Col md={{size: 12}}>
+              <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
+            </Col>
+          </Row>
+          <Row className="line">
+            <Col md={{size: 10, offset: 1}} xs={{size: 12}}>
+              <Row>
+                <Beats beats={parseInt(beats, 10)} current={currentBeatIndex} />
+              </Row>
+            </Col>
+          </Row>
+          <Row className="line">
+            <Col md={{size: 12}}>
+              <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
+            </Col>
+          </Row>
+          <Row className="line">
+            <Col md={{size: 12}}>
+              <TempoSlider onChange={this.handleTempoChange} value={tempo} />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     )
   }
 }

@@ -1,6 +1,6 @@
 const TimerWorker = function() {
   this.timerID = null
-  this.interval = 10
+  this.interval = 100
 
   this.postMessage = (data) => {
     if (data.interval) {
