@@ -1,5 +1,7 @@
 # metronome
 
+[Demo](https://rafaeleyng.github.io/metronome/)
+
 ## how to run
 
 Requires NodeJS (see version in `.nvmrc` file)
