@@ -1,4 +1,7 @@
 .App {
   background-color: #282828;
   height: 100%;
+
+  width: 388px;
+  margin: 10px auto 0;
 }

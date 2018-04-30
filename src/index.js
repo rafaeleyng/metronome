@@ -1,10 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import App from './components/App'
-import registerServiceWorker from './registerServiceWorker'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'normalize.css'
+import './index.css'
+
+import App from './components/App'
+
+// TODO
+// import registerServiceWorker from './registerServiceWorker'
+// registerServiceWorker()
 
 ReactDOM.render(<App />, document.getElementById('root'))
-registerServiceWorker()

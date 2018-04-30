@@ -1,17 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import times from 'lodash/times'
-import { Col } from 'reactstrap'
 
 import Beat from './Beat'
 
 const Beats = ({ beats, current }) => (
-  times(beats, () => null)
-    .map((value, i) => (
-      <Col md={{size: 1}} sm={{size: 1}} className="beatCol" key={i}>
-        <Beat isCurrent={current === i} />
-      </Col>
-    ))
+  <div className='Beats'>
+    {times(beats).map((value, i) => (<Beat key={i} isCurrent={current === i} />))}
+  </div>
 )
 
 Beats.propTypes = {

@@ -1,7 +1,8 @@
 .Metronome {
+  height: 600px;
 
-}
-
-.Metronome .line {
-  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }

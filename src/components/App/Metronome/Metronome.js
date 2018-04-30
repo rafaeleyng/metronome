@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Row, Col } from 'reactstrap'
 
 import Beats from './Beats'
 import BeatsSlider from './BeatsSlider'
@@ -12,8 +11,8 @@ class Metronome extends Component {
   state = {
     currentBeatIndex: null,
     isPlaying: false,
-    beats: '4',
-    tempo: '120',
+    beats: 4,
+    tempo: 120,
   }
 
   componentDidMount() {
@@ -34,7 +33,7 @@ class Metronome extends Component {
   }
 
   handleBeatsChange = (e) => {
-    const beats = e.target.value
+    const beats = parseInt(e.target.value, 10)
     this.setState({
       beats,
     }, () => {
@@ -54,7 +53,7 @@ class Metronome extends Component {
   }
 
   handleTempoChange = (e) => {
-    const tempo = e.target.value
+    const tempo = parseInt(e.target.value, 10)
     this.setState({
       tempo,
     }, () => this.state.metronome.setTempo(tempo))
@@ -79,32 +78,18 @@ class Metronome extends Component {
 
     return (
       <div className='Metronome'>
-        <Row id="subRoot">
-          <Col md={{size:6, offset:3}} xs={{size:12}} className="app">
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 10, offset: 1}} xs={{size: 12}}>
-                <Row>
-                  <Beats beats={parseInt(beats, 10)} current={currentBeatIndex} />
-                </Row>
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
-              </Col>
-            </Row>
-            <Row className="line">
-              <Col md={{size: 12}}>
-                <TempoSlider onChange={this.handleTempoChange} value={tempo} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <div>
+          <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
+        </div>
+        <div>
+          <Beats beats={parseInt(beats, 10)} current={currentBeatIndex} />
+        </div>
+        <div>
+          <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
+        </div>
+        <div>
+          <TempoSlider onChange={this.handleTempoChange} value={tempo} />
+        </div>
       </div>
     )
   }

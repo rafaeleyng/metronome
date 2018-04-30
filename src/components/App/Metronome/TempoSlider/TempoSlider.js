@@ -17,7 +17,7 @@ const TempoSlider = ({ value, onChange }) => (
 
 TempoSlider.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
 }
 
 export default TempoSlider

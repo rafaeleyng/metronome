@@ -7,7 +7,7 @@ const BeatsSlider = ({ value, onChange }) => (
   <div className='BeatsSlider'>
     <Slider
       label='Beats'
-      max='9'
+      max='7'
       min='2'
       onChange={onChange}
       value={value}
@@ -17,7 +17,7 @@ const BeatsSlider = ({ value, onChange }) => (
 
 BeatsSlider.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
 }
 
 export default BeatsSlider
