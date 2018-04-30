@@ -4,13 +4,15 @@ import PropTypes from 'prop-types'
 import Slider from '../common/Slider'
 
 const TempoSlider = ({ value, onChange }) => (
-  <Slider
-    label='Tempo'
-    max='200'
-    min='40'
-    onChange={onChange}
-    value={value}
-  />
+  <div className='TempoSlider'>
+    <Slider
+      label='Tempo'
+      max='200'
+      min='40'
+      onChange={onChange}
+      value={value}
+    />
+  </div>
 )
 
 TempoSlider.propTypes = {

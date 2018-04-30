@@ -1,3 +1,7 @@
 .Metronome {
 
 }
+
+.Metronome .line {
+  margin-bottom: 3rem;
+}

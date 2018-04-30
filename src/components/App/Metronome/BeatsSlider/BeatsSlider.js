@@ -4,13 +4,15 @@ import PropTypes from 'prop-types'
 import Slider from '../common/Slider'
 
 const BeatsSlider = ({ value, onChange }) => (
-  <Slider
-    label='Beats'
-    max='12'
-    min='2'
-    onChange={onChange}
-    value={value}
-  />
+  <div className='BeatsSlider'>
+    <Slider
+      label='Beats'
+      max='9'
+      min='2'
+      onChange={onChange}
+      value={value}
+    />
+  </div>
 )
 
 BeatsSlider.propTypes = {

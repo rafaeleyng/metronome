@@ -1,16 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Beats = ({ isCurrent }) => (
-  <div className={isCurrent ? 'beat current' : 'beat'} />
+const Beat = ({ isCurrent }) => (
+  <div
+    className={`Beat ${isCurrent ? 'Beat--current-beat' : ''}`}
+  />
 )
 
-Beats.propTypes = {
+Beat.propTypes = {
   isCurrent: PropTypes.bool,
 }
 
-Beats.defaultProps = {
+Beat.defaultProps = {
   isCurrent: false,
 }
 
-export default Beats
+export default Beat
