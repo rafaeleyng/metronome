@@ -7,8 +7,8 @@ const TempoSlider = ({ value, onChange }) => (
   <div className='TempoSlider'>
     <Slider
       label='Tempo'
-      max='200'
-      min='40'
+      max={200}
+      min={40}
       onChange={onChange}
       value={value}
     />

@@ -7,8 +7,8 @@ const BeatsSlider = ({ value, onChange }) => (
   <div className='BeatsSlider'>
     <Slider
       label='Beats'
-      max='7'
-      min='2'
+      max={7}
+      min={2}
       onChange={onChange}
       value={value}
     />

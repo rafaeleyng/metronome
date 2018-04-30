@@ -32,8 +32,7 @@ class Metronome extends Component {
     this.setState({ currentBeatIndex: beatIndex })
   }
 
-  handleBeatsChange = (e) => {
-    const beats = parseInt(e.target.value, 10)
+  handleBeatsChange = (beats) => {
     this.setState({
       beats,
     }, () => {
@@ -52,8 +51,7 @@ class Metronome extends Component {
     })
   }
 
-  handleTempoChange = (e) => {
-    const tempo = parseInt(e.target.value, 10)
+  handleTempoChange = (tempo) => {
     this.setState({
       tempo,
     }, () => this.state.metronome.setTempo(tempo))
