@@ -6,9 +6,9 @@ import Slider from '../common/Slider'
 import metronomeConfig from '../../../../config/metronome'
 
 const BeatsSlider = ({ value, onChange }) => (
-  <div className='BeatsSlider'>
+  <div className="BeatsSlider">
     <Slider
-      label='Beats'
+      label="Beats"
       max={metronomeConfig.beats.max}
       min={metronomeConfig.beats.min}
       onChange={onChange}

@@ -21,8 +21,10 @@ const styles = {
   },
 }
 
-const Slider = ({ value, min, max, label, onChange }) => (
-  <div className='Slider' style={styles.slider}>
+const Slider = ({
+  value, min, max, label, onChange,
+}) => (
+  <div className="Slider" style={styles.slider}>
     <p style={styles.p}>
       <span style={styles.label}>{label}</span>
       <span style={styles.value}>{value}</span>

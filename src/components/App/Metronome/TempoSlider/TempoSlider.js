@@ -6,9 +6,9 @@ import Slider from '../common/Slider'
 import metronomeConfig from '../../../../config/metronome'
 
 const TempoSlider = ({ value, onChange }) => (
-  <div className='TempoSlider'>
+  <div className="TempoSlider">
     <Slider
-      label='Tempo'
+      label="Tempo"
       max={metronomeConfig.tempo.max}
       min={metronomeConfig.tempo.min}
       onChange={onChange}

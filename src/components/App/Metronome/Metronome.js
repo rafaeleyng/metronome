@@ -10,6 +10,18 @@ import metronomeFactory from '../../../metronome/metronomeFactory'
 import metronomeConfig from '../../../config/metronome'
 
 class Metronome extends Component {
+  constructor(props) {
+    super(props)
+    const { beats, tempo } = this.state
+
+    const options = {
+      beats,
+      tempo,
+    }
+
+    this.state.metronome = metronomeFactory(this.handleMetronomeTick, options)
+  }
+
   state = {
     currentBeatIndex: null,
     isPlaying: false,
@@ -18,17 +30,6 @@ class Metronome extends Component {
   }
 
   componentDidMount() {
-    const { beats, tempo } = this.state
-
-    const options = {
-      beats,
-      tempo,
-    }
-
-    this.setState({
-      metronome: metronomeFactory(this.handleMetronomeTick, options),
-    })
-
     document.addEventListener('keydown', this.handleKeyDown, false)
   }
 
@@ -129,7 +130,7 @@ class Metronome extends Component {
     } = this.state
 
     return (
-      <div className='Metronome'>
+      <div className="Metronome">
         <div>
           <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
         </div>

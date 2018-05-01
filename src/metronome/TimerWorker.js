@@ -1,4 +1,4 @@
-const TimerWorker = function() {
+const TimerWorker = function TimerWorker() {
   this.timerID = null
   this.interval = 100
 
