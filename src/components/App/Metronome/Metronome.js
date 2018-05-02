@@ -2,24 +2,19 @@ import React, { Component } from 'react'
 
 import Beats from './Beats'
 import BeatsSlider from './BeatsSlider'
+import MetronomeKeyboardHandler from './MetronomeKeyboardHandler'
 import TempoSlider from './TempoSlider'
 import TogglePlay from './TogglePlay'
 
 import metronomeFactory from '../../../metronome/metronomeFactory'
 
-import metronomeConfig from '../../../config/metronome'
-
 class Metronome extends Component {
   constructor(props) {
     super(props)
-    const { beats, tempo } = this.state
-
-    const options = {
-      beats,
-      tempo,
-    }
-
-    this.state.metronome = metronomeFactory(this.handleMetronomeTick, options)
+    this.state.metronome = metronomeFactory(this.handleMetronomeTick, {
+      beats: this.state.beats,
+      tempo: this.state.tempo,
+    })
   }
 
   state = {
@@ -27,60 +22,6 @@ class Metronome extends Component {
     isPlaying: false,
     beats: 4,
     tempo: 120,
-  }
-
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown, false)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown)
-  }
-
-  handleKeyDown = (e) => {
-    const SPACE = 32
-    const LEFT = 37
-    const UP = 38
-    const RIGHT = 39
-    const DOWN = 40
-
-    const { beats, tempo } = this.state
-
-    switch (e.keyCode) {
-      case SPACE: {
-        this.handleTogglePlay()
-        break
-      }
-      case LEFT: {
-        if (tempo > metronomeConfig.tempo.min) {
-          this.handleTempoChange(tempo - 1)
-        }
-        break
-      }
-      case RIGHT: {
-        if (tempo < metronomeConfig.tempo.max) {
-          this.handleTempoChange(tempo + 1)
-        }
-        break
-      }
-      case DOWN: {
-        if (beats > metronomeConfig.beats.min) {
-          this.handleBeatsChange(beats - 1)
-        }
-        break
-      }
-      case UP: {
-        if (beats < metronomeConfig.beats.max) {
-          this.handleBeatsChange(beats + 1)
-        }
-        break
-      }
-      default: {
-        return
-      }
-    }
-
-    e.preventDefault()
   }
 
   handleMetronomeTick = ({ beatIndex }) => {
@@ -131,6 +72,13 @@ class Metronome extends Component {
 
     return (
       <div className="Metronome">
+        <MetronomeKeyboardHandler
+          beats={beats}
+          tempo={tempo}
+          onBeatsChange={this.handleBeatsChange}
+          onTempoChange={this.handleTempoChange}
+          onTogglePlay={this.handleTogglePlay}
+        />
         <div>
           <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
         </div>
