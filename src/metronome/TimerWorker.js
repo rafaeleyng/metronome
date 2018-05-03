@@ -1,23 +1,18 @@
 const TimerWorker = function TimerWorker() {
-  this.timerID = null
-  this.interval = 100
+  const interval = 25
+  let timerID
 
   this.postMessage = (data) => {
-    if (data.interval) {
-      this.interval = data.interval
-      if (this.timerID) {
-        clearInterval(this.timerID)
-        this.timerID = setInterval(() => {
-          this.onmessage('tick')
-        }, this.interval)
-      }
-    } else if (data === 'start') {
-      this.timerID = setInterval(() => {
+    if (data === 'start') {
+      timerID = setInterval(() => {
         this.onmessage('tick')
-      }, this.interval)
-    } else if (data === 'stop') {
-      clearInterval(this.timerID)
-      this.timerID = null
+      }, interval)
+      return
+    }
+
+    if (data === 'stop') {
+      clearInterval(timerID)
+      timerID = null
     }
   }
 }

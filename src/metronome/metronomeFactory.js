@@ -9,12 +9,10 @@ function metronomeFactory(cb, {
   let currentTempo = tempo
 
   let audioContext = null
-  let beatIndex // What note is currently last scheduled?
-  const lookahead = 25.0 // How frequently to call scheduling function (in milliseconds)
-  const scheduleAheadTime = 0.1 // How far ahead to schedule audio (sec). This is calculated from lookahead, and overlaps with next interval (in case the timer is late)
-  let nextBeatTime = 0.0 // when the next note is due.
-  const noteLength = 0.05 // length of "beep" (in seconds)
   let timerWorker = null // The Web Worker used to fire timer messages
+
+  let beatIndex // What note is currently last scheduled?
+  let nextBeatTime = 0.0 // when the next note is due.
 
   function nextNote() {
     const secondsPerBeat = 60.0 / currentTempo // Notice this picks up the currentTempo value to calculate beat length.
@@ -27,25 +25,25 @@ function metronomeFactory(cb, {
   }
 
   function scheduleNote(beatNumber, time) {
-    const osc = audioContext.createOscillator()
-    osc.connect(audioContext.destination)
-
     const isFirstBeat = (beatNumber % currentBeats) === 0
-
+    let frequency = 440.0
     if (isFirstBeat) {
-      osc.frequency.value = 880.0
-    } else {
-      osc.frequency.value = 440.0
+      frequency = 880.0
     }
 
+    const osc = audioContext.createOscillator()
+    osc.connect(audioContext.destination)
+    osc.frequency.value = frequency
     osc.start(time)
-    osc.stop(time + noteLength)
+    osc.stop(time + 0.05)
     cb({
       beatIndex,
     })
   }
 
   function scheduler() {
+    // How far ahead to schedule audio (sec). This is calculated from lookahead, and overlaps with next interval (in case the timer is late)
+    const scheduleAheadTime = 0.1
     // while there are notes that will need to play before the next interval,
     // schedule them and advance the pointer.
     while (nextBeatTime < audioContext.currentTime + scheduleAheadTime) {
@@ -76,7 +74,6 @@ function metronomeFactory(cb, {
         scheduler()
       }
     }
-    timerWorker.postMessage({ interval: lookahead })
   }
 
   init()
