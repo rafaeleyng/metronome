@@ -21,7 +21,8 @@ class Metronome extends Component {
     currentBeatIndex: null,
     isPlaying: false,
     beats: 4,
-    tempo: 120,
+    // tempo: 120,
+    tempo: 60,
   }
 
   handleMetronomeTick = ({ beatIndex }) => {

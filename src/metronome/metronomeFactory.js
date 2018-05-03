@@ -1,7 +1,7 @@
 /* global AudioContext */
 import TimerWorker from './TimerWorker'
 
-function metronomeFactory(cb, {
+function metronomeFactory(onBeat, {
   beats = 4,
   tempo = 120.0,
 } = {}) {
@@ -14,9 +14,9 @@ function metronomeFactory(cb, {
   let beatIndex // What note is currently last scheduled?
   let nextBeatTime = 0.0 // when the next note is due.
 
-  function nextNote() {
-    const secondsPerBeat = 60.0 / currentTempo // Notice this picks up the currentTempo value to calculate beat length.
-    nextBeatTime += secondsPerBeat // Add beat length to last beat time
+  function advanceNote() {
+    const beatLength = 60.0 / currentTempo
+    nextBeatTime += beatLength
 
     beatIndex += 1 // Advance the beat number, wrap to zero
     if (beatIndex === currentBeats) {
@@ -24,41 +24,34 @@ function metronomeFactory(cb, {
     }
   }
 
-  function scheduleNote(beatNumber, time) {
-    const isFirstBeat = (beatNumber % currentBeats) === 0
-    let frequency = 440.0
-    if (isFirstBeat) {
-      frequency = 880.0
-    }
-
+  function scheduleNote(noteDueTime, isFirstBeat) {
     const osc = audioContext.createOscillator()
     osc.connect(audioContext.destination)
-    osc.frequency.value = frequency
-    osc.start(time)
-    osc.stop(time + 0.05)
-    cb({
-      beatIndex,
-    })
+    osc.frequency.value = isFirstBeat ? 880.0 : 440.0
+    osc.start(noteDueTime)
+    osc.stop(noteDueTime + 0.05)
   }
 
-  function scheduler() {
-    // How far ahead to schedule audio (sec). This is calculated from lookahead, and overlaps with next interval (in case the timer is late)
-    const scheduleAheadTime = 0.1
-    // while there are notes that will need to play before the next interval,
-    // schedule them and advance the pointer.
-    while (nextBeatTime < audioContext.currentTime + scheduleAheadTime) {
-      scheduleNote(beatIndex, nextBeatTime)
-      nextNote()
+  function scheduleAhead() {
+    /*
+      How far ahead to schedule audio (in seconds)
+      This should be greater than the interval time. If the timer gets late, there will be more notes than needed already scheduled.
+    */
+    const scheduleAheadWindow = 0.1
+
+    // schedule all notes due in the current time window
+    while (nextBeatTime < (audioContext.currentTime + scheduleAheadWindow)) {
+      const isFirstBeat = (beatIndex % currentBeats) === 0
+      scheduleNote(nextBeatTime, isFirstBeat)
+      onBeat({ beatIndex })
+      advanceNote()
     }
   }
 
-  function play(shouldPlay) {
+  function togglePlay(shouldPlay) {
     if (shouldPlay) {
-      // always start from first beat of bar
-      beatIndex = 0
-
-      // next note is due right when started playing
-      nextBeatTime = audioContext.currentTime
+      beatIndex = 0 // start playing from first beat
+      nextBeatTime = audioContext.currentTime + 0.1 // delay a little the first beat to avoid a glitch
       timerWorker.postMessage('start')
     } else {
       timerWorker.postMessage('stop')
@@ -67,11 +60,11 @@ function metronomeFactory(cb, {
 
   function init() {
     audioContext = new AudioContext()
-    timerWorker = new TimerWorker()
 
+    timerWorker = new TimerWorker()
     timerWorker.onmessage = (data) => {
       if (data === 'tick') {
-        scheduler()
+        scheduleAhead()
       }
     }
   }
@@ -79,7 +72,7 @@ function metronomeFactory(cb, {
   init()
 
   return {
-    togglePlay: play,
+    togglePlay,
     setTempo: (t) => { currentTempo = t },
     setBeats: (b) => { currentBeats = b },
   }
