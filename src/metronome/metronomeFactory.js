@@ -1,5 +1,5 @@
 /* global AudioContext */
-import TimerWorker from './TimerWorker'
+import TickWorker from './TickWorker'
 
 function metronomeFactory(onBeat, {
   beats = 4,
@@ -8,8 +8,8 @@ function metronomeFactory(onBeat, {
   let currentBeats = beats
   let currentTempo = tempo
 
-  let audioContext = null
-  let timerWorker = null // The Web Worker used to fire timer messages
+  // let audioContext = null
+  let tickWorker = null // The Web Worker used to fire timer messages
 
   let beatIndex // What note is currently last scheduled?
   let nextBeatTime = 0.0 // when the next note is due.
@@ -24,13 +24,13 @@ function metronomeFactory(onBeat, {
     }
   }
 
-  function scheduleNote(noteDueTime, isFirstBeat) {
-    const osc = audioContext.createOscillator()
-    osc.connect(audioContext.destination)
-    osc.frequency.value = isFirstBeat ? 880.0 : 440.0
-    osc.start(noteDueTime)
-    osc.stop(noteDueTime + 0.05)
-  }
+  // function scheduleNote(noteDueTime, isFirstBeat) {
+  //   const osc = audioContext.createOscillator()
+  //   osc.connect(audioContext.destination)
+  //   osc.frequency.value = isFirstBeat ? 880.0 : 440.0
+  //   osc.start(noteDueTime)
+  //   osc.stop(noteDueTime + 0.05)
+  // }
 
   function scheduleAhead() {
     /*
@@ -41,8 +41,7 @@ function metronomeFactory(onBeat, {
 
     // schedule all notes due in the current time window
     while (nextBeatTime < (audioContext.currentTime + scheduleAheadWindow)) {
-      const isFirstBeat = (beatIndex % currentBeats) === 0
-      scheduleNote(nextBeatTime, isFirstBeat)
+      scheduleNote(nextBeatTime, beatIndex)
       onBeat({ beatIndex })
       advanceNote()
     }
@@ -52,17 +51,17 @@ function metronomeFactory(onBeat, {
     if (shouldPlay) {
       beatIndex = 0 // start playing from first beat
       nextBeatTime = audioContext.currentTime + 0.1 // delay a little the first beat to avoid a glitch
-      timerWorker.postMessage('start')
+      tickWorker.postMessage('start')
     } else {
-      timerWorker.postMessage('stop')
+      tickWorker.postMessage('stop')
     }
   }
 
   function init() {
     audioContext = new AudioContext()
 
-    timerWorker = new TimerWorker()
-    timerWorker.onmessage = (data) => {
+    tickWorker = new TickWorker()
+    tickWorker.onmessage = (data) => {
       if (data === 'tick') {
         scheduleAhead()
       }

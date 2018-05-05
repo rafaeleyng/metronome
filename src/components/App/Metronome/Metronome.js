@@ -6,14 +6,17 @@ import MetronomeKeyboardHandler from './MetronomeKeyboardHandler'
 import TempoSlider from './TempoSlider'
 import TogglePlay from './TogglePlay'
 
-import metronomeFactory from '../../../metronome/metronomeFactory'
+// import metronomeFactory from '../../../metronome/metronomeFactory'
+import Metronome from '../../../metronome/Metronome'
 
-class Metronome extends Component {
+class MetronomeComponent extends Component {
   constructor(props) {
     super(props)
-    this.state.metronome = metronomeFactory(this.handleMetronomeTick, {
+    this.state.metronome = new Metronome({
       beats: this.state.beats,
       tempo: this.state.tempo,
+
+      onBeat: this.handleBeat,
     })
   }
 
@@ -21,12 +24,30 @@ class Metronome extends Component {
     currentBeatIndex: null,
     isPlaying: false,
     beats: 4,
-    // tempo: 120,
-    tempo: 60,
+    tempo: 120,
+    // tempo: 60,
   }
 
-  handleMetronomeTick = ({ beatIndex }) => {
-    this.setState({ currentBeatIndex: beatIndex })
+  toggleMetronome = (shouldPlay) => {
+    this.setState({
+      currentBeatIndex: null,
+      isPlaying: shouldPlay,
+    }, () => {
+      if (shouldPlay) {
+        this.state.metronome.play()
+      } else {
+        this.state.metronome.stop()
+      }
+    })
+  }
+
+  restartMetronome = () => {
+    this.toggleMetronome(false)
+    this.toggleMetronome(true)
+  }
+
+  handleBeat = ({ index }) => {
+    this.setState({ currentBeatIndex: index })
   }
 
   handleBeatsChange = (beats) => {
@@ -41,9 +62,7 @@ class Metronome extends Component {
       metronome.setBeats(beats)
 
       if (isPlaying) {
-        // TODO refatorar esse restart do play
-        metronome.togglePlay(false)
-        metronome.togglePlay(true)
+        this.restartMetronome()
       }
     })
   }
@@ -57,10 +76,7 @@ class Metronome extends Component {
   handleTogglePlay = () => {
     const { isPlaying } = this.state
     const shouldPlay = !isPlaying
-    this.setState({
-      currentBeatIndex: null,
-      isPlaying: shouldPlay,
-    }, () => this.state.metronome.togglePlay(shouldPlay))
+    this.toggleMetronome(shouldPlay)
   }
 
   render() {
@@ -97,4 +113,4 @@ class Metronome extends Component {
   }
 }
 
-export default Metronome
+export default MetronomeComponent
