@@ -1,11 +1,18 @@
 import TickWorker from './TickWorker'
 
 class BarScheduler {
-  scheduleBar({
-    beats, tempo, getAudioContextCurrentTime, onBarComplete, onBeat,
-  }) {
-    console.log('BarScheduler#scheduleBar')
+  setTempo(tempo) {
+    this.tempo = tempo
+  }
 
+  scheduleBar({
+    beats,
+    tempo,
+    getAudioContextCurrentTime,
+    onBarComplete,
+    onBeat,
+  }) {
+    this.tempo = tempo
     let beatIndex = 0 // start playing from first beat
     let nextBeatTime = getAudioContextCurrentTime() + 0.1 // delay a little (0.1) the first beat to avoid a glitch
 
@@ -25,7 +32,7 @@ class BarScheduler {
         }
 
         onBeat(nextBeatTime, beatIndex)
-        nextBeatTime += 60.0 / tempo
+        nextBeatTime += 60.0 / this.tempo
         beatIndex += 1 // Advance the beat number, wrap to zero
       }
     }
@@ -41,7 +48,6 @@ class BarScheduler {
   }
 
   finish() {
-    console.log('BarScheduler#finish')
     this.tickWorker.postMessage('stop')
     delete this.tickWorker
   }

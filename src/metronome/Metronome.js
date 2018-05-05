@@ -16,6 +16,9 @@ class Metronome {
 
   setTempo(tempo) {
     this.props.tempo = tempo
+    if (this.barScheduler) {
+      this.barScheduler.setTempo(tempo)
+    }
   }
 
   setBeats(beats) {
@@ -23,7 +26,7 @@ class Metronome {
   }
 
   play() {
-    const { beats, tempo, onBeat } = this.props
+    const { beats, onBeat } = this.props
     const audioContext = new AudioContext()
 
     const getAudioContextCurrentTime = () => audioContext.currentTime
@@ -35,12 +38,11 @@ class Metronome {
       onBeat({ index: beatIndex })
     }
 
-    let handleBarComplete
-
-    const scheduleBar = () => {
+    const handleBarComplete = () => {
+      // TODO fazer regras de repetição aqui
       this.barScheduler.scheduleBar({
         beats,
-        tempo,
+        tempo: this.props.tempo,
         getAudioContextCurrentTime,
 
         onBarComplete: handleBarComplete,
@@ -48,12 +50,16 @@ class Metronome {
       })
     }
 
-    handleBarComplete = () => {
-      // TODO fazer regras de repetição aqui
-      scheduleBar()
-    }
-
     this.barScheduler = new BarScheduler()
+
+    this.barScheduler.scheduleBar({
+      beats,
+      tempo: this.props.tempo,
+      getAudioContextCurrentTime,
+
+      onBarComplete: handleBarComplete,
+      onBeat: handleBeat,
+    })
   }
 
   stop() {
