@@ -13,37 +13,26 @@ class Metronome extends Component {
     currentBeat: null,
     isPlaying: false,
     beats: 4,
-    tempo: 60,
+    tempo: 120,
     stopMetronome: null,
   }
 
-  toggleMetronome = (shouldPlay) => {
-    this.setState({
-      currentBeat: null,
-      isPlaying: shouldPlay,
-    }, () => {
-      const { beats, tempo } = this.state
-
-      if (shouldPlay) {
-        this.setState({
-          stopMetronome: startMetronome({ beats, tempo, onBeat: this.handleBeat }),
-        })
-      } else {
-        this.state.stopMetronome()
-      }
-    })
-  }
-
-  restartMetronome = () => {
-    const { beats, tempo, stopMetronome } = this.state
-
-    if (stopMetronome) {
-      stopMetronome()
-    }
-
+  startMetronome() {
+    const { beats, tempo } = this.state
     this.setState({
       stopMetronome: startMetronome({ beats, tempo, onBeat: this.handleBeat }),
     })
+  }
+
+  stopMetronome() {
+    this.state.stopMetronome()
+  }
+
+  restartMetronome = () => {
+    if (this.state.isPlaying) {
+      this.stopMetronome()
+      this.startMetronome()
+    }
   }
 
   handleBeat = ({ index }) => {
@@ -71,9 +60,18 @@ class Metronome extends Component {
   }
 
   handleTogglePlay = () => {
-    const { isPlaying } = this.state
-    const shouldPlay = !isPlaying
-    this.toggleMetronome(shouldPlay)
+    const shouldPlay = !this.state.isPlaying
+
+    if (shouldPlay) {
+      this.startMetronome()
+    } else {
+      this.stopMetronome()
+    }
+
+    this.setState({
+      currentBeat: null,
+      isPlaying: shouldPlay,
+    })
   }
 
   render() {

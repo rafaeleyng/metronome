@@ -1,33 +1,25 @@
 /* global AudioContext */
+import playNote from './playNote'
 import startBar from './startBar'
-
-const playNote = (audioContext, noteStartTime, frequency) => {
-  const osc = audioContext.createOscillator()
-  osc.connect(audioContext.destination)
-  osc.frequency.value = frequency
-  osc.start(noteStartTime)
-  osc.stop(noteStartTime + 0.05)
-}
 
 const startMetronome = ({ beats, tempo, onBeat }) => {
   const audioContext = new AudioContext()
   const getAudioContextCurrentTime = () => audioContext.currentTime
 
   const handleBeat = (noteStartTime, beatIndex) => {
-    const frequency = beatIndex === 0 ? 880.0 : 440.0
-    playNote(audioContext, noteStartTime, frequency)
+    playNote(audioContext, noteStartTime, beatIndex)
     onBeat({ index: beatIndex })
   }
 
   let stopBar
 
-  const handleBarComplete = (nextBeatStart) => {
+  const handleBarComplete = (nextBeatTime) => {
     stopBar()
     stopBar = startBar({
       beats,
       tempo,
       getAudioContextCurrentTime,
-      nextBeatStart,
+      firstBeatTime: nextBeatTime,
       onBarComplete: handleBarComplete,
       onBeat: handleBeat,
     })
@@ -42,6 +34,7 @@ const startMetronome = ({ beats, tempo, onBeat }) => {
   })
 
   const stopMetronome = () => {
+    audioContext.close()
     stopBar()
   }
 
