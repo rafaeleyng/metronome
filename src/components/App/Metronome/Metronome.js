@@ -6,62 +6,55 @@ import MetronomeKeyboardHandler from './MetronomeKeyboardHandler'
 import TempoSlider from './TempoSlider'
 import TogglePlay from './TogglePlay'
 
-// import metronomeFactory from '../../../metronome/metronomeFactory'
-import Metronome from '../../../metronome/Metronome'
+import startMetronome from '../../../metronome/startMetronome'
 
-class MetronomeComponent extends Component {
-  constructor(props) {
-    super(props)
-    this.state.metronome = new Metronome({
-      beats: this.state.beats,
-      tempo: this.state.tempo,
-
-      onBeat: this.handleBeat,
-    })
-  }
-
+class Metronome extends Component {
   state = {
-    currentBeatIndex: null,
+    currentBeat: null,
     isPlaying: false,
     beats: 4,
-    tempo: 120,
-    // tempo: 60,
+    tempo: 60,
+    stopMetronome: null,
   }
 
   toggleMetronome = (shouldPlay) => {
     this.setState({
-      currentBeatIndex: null,
+      currentBeat: null,
       isPlaying: shouldPlay,
     }, () => {
+      const { beats, tempo } = this.state
+
       if (shouldPlay) {
-        this.state.metronome.play()
+        this.setState({
+          stopMetronome: startMetronome({ beats, tempo, onBeat: this.handleBeat }),
+        })
       } else {
-        this.state.metronome.stop()
+        this.state.stopMetronome()
       }
     })
   }
 
   restartMetronome = () => {
-    this.toggleMetronome(false)
-    this.toggleMetronome(true)
+    const { beats, tempo, stopMetronome } = this.state
+
+    if (stopMetronome) {
+      stopMetronome()
+    }
+
+    this.setState({
+      stopMetronome: startMetronome({ beats, tempo, onBeat: this.handleBeat }),
+    })
   }
 
   handleBeat = ({ index }) => {
-    this.setState({ currentBeatIndex: index })
+    this.setState({ currentBeat: index })
   }
 
   handleBeatsChange = (beats) => {
     this.setState({
       beats,
     }, () => {
-      const {
-        isPlaying,
-        metronome,
-      } = this.state
-
-      metronome.setBeats(beats)
-
-      if (isPlaying) {
+      if (this.state.isPlaying) {
         this.restartMetronome()
       }
     })
@@ -70,7 +63,11 @@ class MetronomeComponent extends Component {
   handleTempoChange = (tempo) => {
     this.setState({
       tempo,
-    }, () => this.state.metronome.setTempo(tempo))
+    }, () => {
+      if (this.state.isPlaying) {
+        this.restartMetronome()
+      }
+    })
   }
 
   handleTogglePlay = () => {
@@ -82,7 +79,7 @@ class MetronomeComponent extends Component {
   render() {
     const {
       beats,
-      currentBeatIndex,
+      currentBeat,
       isPlaying,
       tempo,
     } = this.state
@@ -100,7 +97,7 @@ class MetronomeComponent extends Component {
           <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
         </div>
         <div>
-          <Beats beats={beats} current={currentBeatIndex} />
+          <Beats beats={beats} current={currentBeat} />
         </div>
         <div>
           <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
@@ -113,4 +110,4 @@ class MetronomeComponent extends Component {
   }
 }
 
-export default MetronomeComponent
+export default Metronome
