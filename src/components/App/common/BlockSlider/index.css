@@ -1,0 +1,13 @@
+.BlockSlider .rc-slider-rail {
+  background-color: #919191;
+  height: 3px;
+}
+
+.BlockSlider .rc-slider-track {
+  background-color: #DC8836;
+  height: 3px;
+}
+
+.BlockSlider .rc-slider-handle {
+  border: 0;
+}
