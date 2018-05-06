@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import _ from 'lodash'
+import uniqueId from 'lodash/uniqueId'
 
 import { MdAdd } from 'react-icons/lib/md'
 
@@ -8,6 +8,7 @@ import TogglePlay from '../common/TogglePlay'
 import BarsGroup from './BarsGroup'
 
 import PlayScoreStrategy from '../../../metronome/barExecutionStrategies/PlayScoreStrategy'
+import barsGroupsExpander from '../../../metronome/barExecutionStrategies/PlayScoreStrategy/barsGroupsExpander'
 
 import startMetronome from '../../../metronome/startMetronome'
 
@@ -23,7 +24,7 @@ const constDefaultBarsGroupValues = {
 }
 
 const newGroup = () => ({
-  id: _.uniqueId(),
+  id: uniqueId(),
   ...constDefaultBarsGroupValues,
 })
 
@@ -37,7 +38,7 @@ class Score extends Component {
 
   startMetronome() {
     const { groups } = this.state
-    const barExecutionStrategy = new PlayScoreStrategy({ barGroups: groups })
+    const barExecutionStrategy = new PlayScoreStrategy({ bars: barsGroupsExpander(groups) })
     this.setState({
       stopMetronome: startMetronome({
         barExecutionStrategy,
@@ -100,6 +101,12 @@ class Score extends Component {
     }
     this.setState({
       groups: this.state.groups.filter(g => g !== group),
+    })
+  }
+
+  handleChangeQty = (group, qty) => {
+    this.setState({
+      groups: this.state.groups.map(g => (g === group ? { ...g, qty } : g)),
     })
   }
 

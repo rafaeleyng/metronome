@@ -1,16 +1,16 @@
 class PlayScoreStrategy {
-  constructor({ barGroups }) {
+  constructor({ bars }) {
     this.state = {
       currentBar: 0,
     }
 
     this.props = {
-      barGroups,
+      bars,
     }
   }
 
   nextBar() {
-    const nextBar = this.props.barGroups[this.state.currentBar]
+    const nextBar = this.props.bars[this.state.currentBar]
     this.state.currentBar += 1
 
     if (!nextBar) {
