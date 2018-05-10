@@ -30,6 +30,7 @@ const newGroup = () => ({
 
 class Score extends Component {
   state = {
+    bars: [],
     currentBeat: null,
     currentBar: 0,
     groups: [newGroup()],
@@ -38,8 +39,10 @@ class Score extends Component {
 
   startMetronome() {
     const { groups } = this.state
-    const barExecutionStrategy = new PlayScoreStrategy({ bars: barsGroupsExpander(groups) })
+    const bars = barsGroupsExpander(groups)
+    const barExecutionStrategy = new PlayScoreStrategy({ bars })
     this.setState({
+      bars,
       stopMetronome: startMetronome({
         barExecutionStrategy,
         onBeat: this.handleBeat,
@@ -51,6 +54,9 @@ class Score extends Component {
 
   stopMetronome() {
     this.state.stopMetronome()
+    this.setState({
+      bars: [],
+    })
   }
 
   restartMetronome = () => {
@@ -124,16 +130,16 @@ class Score extends Component {
 
   render() {
     const {
+      bars,
       currentBeat,
       currentBar,
       isPlaying,
+      groups,
     } = this.state
 
-    const { groups } = this.state
-
     let currentBeats = null
-    if (groups[currentBar]) {
-      currentBeats = groups[currentBar].beats
+    if (bars && bars[currentBar]) {
+      currentBeats = bars[currentBar].beats
     }
 
     const onRemoveGroup = this.state.groups.length > 1 ? this.handleRemoveGroup : undefined
@@ -149,6 +155,7 @@ class Score extends Component {
             group={group}
             onChangeBeats={this.handleChangeBeats}
             onChangeTempo={this.handleChangeTempo}
+            onChangeQty={this.handleChangeQty}
             onRemove={onRemoveGroup}
           />))}
         </div>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import NumericInput from 'react-numeric-input'
+
 import { MdClear } from 'react-icons/lib/md'
 
 import InlineSlider from '../../common/InlineSlider'
@@ -17,6 +19,7 @@ class BarsGroup extends Component {
     group: PropTypes.object.isRequired,
     onRemove: PropTypes.func,
     onChangeBeats: PropTypes.func.isRequired,
+    onChangeQty: PropTypes.func.isRequired,
     onChangeTempo: PropTypes.func.isRequired,
   }
 
@@ -27,6 +30,11 @@ class BarsGroup extends Component {
   handleChangeBeats = (beats) => {
     const { onChangeBeats, group } = this.props
     onChangeBeats(group, beats)
+  }
+
+  handleChangeQty = (qty) => {
+    const { onChangeQty, group } = this.props
+    onChangeQty(group, qty)
   }
 
   handleChangeTempo = (tempo) => {
@@ -40,10 +48,48 @@ class BarsGroup extends Component {
 
   render() {
     const { disabled, group, onRemove } = this.props
-    const { beats, tempo } = group
+    const { beats, tempo, qty } = group
+
+    const styles = {
+      qty: {
+        input: {
+          color: '#DC8836',
+          width: '80px',
+          border: 'none',
+          backgroundColor: 'transparent',
+        },
+        'input:focus': {
+          outline: 'none',
+        },
+
+        minus: {
+          backgroundColor: '#919191',
+          cursor: 'pointer',
+          width: '16px',
+          marginLeft: '-8px',
+        },
+        plus: {
+          backgroundColor: '#919191',
+          cursor: 'pointer',
+          height: '16px',
+          marginTop: '-8px',
+        },
+      },
+    }
 
     return (
       <div className="BarsGroup">
+        <NumericInput
+          className="BarsGroup__qty"
+          min={1}
+          max={99}
+          strict
+          mobile
+          onChange={this.handleChangeQty}
+          value={qty}
+          style={styles.qty}
+          readOnly={disabled}
+        />
         <InlineSlider
           disabled={disabled}
           max={metronomeConfig.beats.max}
