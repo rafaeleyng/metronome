@@ -9,7 +9,7 @@ const startBar = ({
 }) => {
   const { beats, tempo } = bar
   const noteLength = 60.0 / tempo
-  let nextBeatTime = firstBeatTime || (getAudioContextCurrentTime() + 0.1) // delay a little (0.1) the first beat to avoid a glitch
+  let nextBeatTime = firstBeatTime || (getAudioContextCurrentTime() + 0.15) // delay a little (0.1) the first beat to avoid a glitch
   let beatIndex = 0 // start playing from first beat
 
   const tickWorker = new TickWorker()
@@ -24,7 +24,7 @@ const startBar = ({
       This should be greater than the interval time.
       If the timer gets late, there will be more notes than needed already scheduled.
     */
-    const scheduleAheadWindow = 0.1
+    const scheduleAheadWindow = 0.15
 
     // schedule all notes due in the current time window
     while (nextBeatTime < (getAudioContextCurrentTime() + scheduleAheadWindow)) {

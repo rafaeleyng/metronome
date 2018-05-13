@@ -5,3 +5,8 @@
   justify-content: space-around;
   align-items: center;
 }
+
+.Score__groups {
+  /* height: 275px; */
+  overflow: scroll;
+}

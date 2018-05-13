@@ -148,7 +148,7 @@ class Score extends Component {
       <div className="Score">
         <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
         {currentBeats && <Beats beats={currentBeats} current={currentBeat} />}
-        <div>
+        <div className="Score__groups">
           {groups.map(group => (<BarsGroup
             disabled={isPlaying}
             key={group.id}

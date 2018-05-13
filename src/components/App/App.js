@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { MdRepeat, MdQueueMusic } from 'react-icons/lib/md'
+import { MdRepeatOne, MdQueueMusic } from 'react-icons/lib/md'
 
 import Metronome from './Metronome'
 import Score from './Score'
@@ -42,7 +42,7 @@ class App extends Component {
           {isMetronomeMode ? (<Metronome />) : (<Score />)}
         </div>
         <div className="App__tabs">
-          <MdRepeat onClick={this.modeMetronome} {...metronomeStyle} />
+          <MdRepeatOne onClick={this.modeMetronome} {...metronomeStyle} />
           <MdQueueMusic onClick={this.modeScore} {...scoreStyle} />
         </div>
       </div>
