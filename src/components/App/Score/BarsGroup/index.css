@@ -1,0 +1,29 @@
+.BarsGroup {
+  width: 100%;
+  padding: 5px 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.BarsGroup .InlineSlider {
+  position: relative;
+  top: -6px;
+}
+
+.BarsGroup__qty {
+  color: #DC8836;
+  width: 120px;
+  border: none !important;
+  background-color: transparent;
+}
+
+input[type="text"].BarsGroup__qty {
+  font-size: 16px !important;
+}
+
+.react-numeric-input b {
+  border: none !important;
+  background-color: transparent !important;
+  cursor: pointer;
+}

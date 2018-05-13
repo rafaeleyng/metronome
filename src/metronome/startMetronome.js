@@ -2,7 +2,13 @@
 import playNote from './playNote'
 import startBar from './startBar'
 
-const startMetronome = ({ beats, tempo, onBeat }) => {
+const startMetronome = ({
+  barExecutionStrategy,
+  onBeat,
+  onBarComplete = () => {},
+  onComplete = () => {},
+}) => {
+  let barIndex = 0
   const audioContext = new AudioContext()
   const getAudioContextCurrentTime = () => audioContext.currentTime
 
@@ -14,10 +20,18 @@ const startMetronome = ({ beats, tempo, onBeat }) => {
   let stopBar
 
   const handleBarComplete = (nextBeatTime) => {
+    onBarComplete({ index: barIndex })
+    barIndex += 1
     stopBar()
+
+    const bar = barExecutionStrategy.nextBar()
+    if (!bar) {
+      onComplete()
+      return
+    }
+
     stopBar = startBar({
-      beats,
-      tempo,
+      bar,
       getAudioContextCurrentTime,
       firstBeatTime: nextBeatTime,
       onBarComplete: handleBarComplete,
@@ -25,18 +39,23 @@ const startMetronome = ({ beats, tempo, onBeat }) => {
     })
   }
 
-  stopBar = startBar({
-    beats,
-    tempo,
-    getAudioContextCurrentTime,
-    onBarComplete: handleBarComplete,
-    onBeat: handleBeat,
-  })
-
   const stopMetronome = () => {
     audioContext.close()
     stopBar()
   }
+
+  const bar = barExecutionStrategy.nextBar()
+  if (!bar) {
+    onComplete()
+    return stopMetronome
+  }
+
+  stopBar = startBar({
+    bar,
+    getAudioContextCurrentTime,
+    onBarComplete: handleBarComplete,
+    onBeat: handleBeat,
+  })
 
   return stopMetronome
 }

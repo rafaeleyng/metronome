@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Slider from '../common/Slider'
+import BlockSlider from '../../common/BlockSlider'
 
 import metronomeConfig from '../../../../config/metronome'
 
 const TempoSlider = ({ value, onChange }) => (
   <div className="TempoSlider">
-    <Slider
+    <BlockSlider
       label="Tempo"
       max={metronomeConfig.tempo.max}
       min={metronomeConfig.tempo.min}

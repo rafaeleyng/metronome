@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 
-import Beats from './Beats'
+import Beats from '../common/Beats'
+import TogglePlay from '../common/TogglePlay'
 import BeatsSlider from './BeatsSlider'
 import MetronomeKeyboardHandler from './MetronomeKeyboardHandler'
 import TempoSlider from './TempoSlider'
-import TogglePlay from './TogglePlay'
+
+import RepeatSingleBarStrategy from '../../../metronome/barExecutionStrategies/RepeatSingleBarStrategy'
 
 import startMetronome from '../../../metronome/startMetronome'
 
@@ -17,10 +19,20 @@ class Metronome extends Component {
     stopMetronome: null,
   }
 
+  componentWillUnmount() {
+    if (this.state.isPlaying) {
+      this.stopMetronome()
+    }
+  }
+
   startMetronome() {
     const { beats, tempo } = this.state
+    const barExecutionStrategy = new RepeatSingleBarStrategy({ beats, tempo })
     this.setState({
-      stopMetronome: startMetronome({ beats, tempo, onBeat: this.handleBeat }),
+      stopMetronome: startMetronome({
+        barExecutionStrategy,
+        onBeat: this.handleBeat,
+      }),
     })
   }
 
@@ -91,18 +103,10 @@ class Metronome extends Component {
           onTempoChange={this.handleTempoChange}
           onTogglePlay={this.handleTogglePlay}
         />
-        <div>
-          <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
-        </div>
-        <div>
-          <Beats beats={beats} current={currentBeat} />
-        </div>
-        <div>
-          <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
-        </div>
-        <div>
-          <TempoSlider onChange={this.handleTempoChange} value={tempo} />
-        </div>
+        <TogglePlay isPlaying={isPlaying} onClick={this.handleTogglePlay} />
+        <Beats beats={beats} current={currentBeat} />
+        <BeatsSlider onChange={this.handleBeatsChange} value={beats} />
+        <TempoSlider onChange={this.handleTempoChange} value={tempo} />
       </div>
     )
   }

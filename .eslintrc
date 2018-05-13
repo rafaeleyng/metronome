@@ -9,6 +9,7 @@
     "max-len": ["off"],
     "semi": ["error", "never"],
 
+    "react/forbid-prop-types": ["off"],
     "react/jsx-filename-extension": ["off"],
 
     "jsx-a11y/click-events-have-key-events": ["off"],

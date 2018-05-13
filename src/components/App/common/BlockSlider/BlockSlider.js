@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import RCSlider from 'rc-slider'
 
-const styles = {
+const defaultStyles = {
   slider: {
     width: '300px',
   },
@@ -21,13 +21,18 @@ const styles = {
   },
 }
 
-const Slider = ({
-  value, min, max, label, onChange,
+const BlockSlider = ({
+  value,
+  min,
+  max,
+  label,
+  onChange,
+  styles,
 }) => (
-  <div className="Slider" style={styles.slider}>
-    <p style={styles.p}>
-      <span style={styles.label}>{label}</span>
-      <span style={styles.value}>{value}</span>
+  <div className="BlockSlider" style={{ ...defaultStyles.slider, ...styles.slider }}>
+    <p style={defaultStyles.p}>
+      <span style={defaultStyles.label}>{label}</span>
+      <span style={defaultStyles.value}>{value}</span>
     </p>
     <RCSlider
       value={value}
@@ -39,12 +44,17 @@ const Slider = ({
   </div>
 )
 
-Slider.propTypes = {
+BlockSlider.propTypes = {
   label: PropTypes.string.isRequired,
   max: PropTypes.number.isRequired,
   min: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.number.isRequired,
+  styles: PropTypes.object,
 }
 
-export default Slider
+BlockSlider.defaultProps = {
+  styles: {},
+}
+
+export default BlockSlider

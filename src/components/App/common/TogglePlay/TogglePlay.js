@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FaPlay, FaStop } from 'react-icons/lib/fa'
+import { MdPlayArrow, MdStop } from 'react-icons/lib/md'
 
-const childProps = {
-  size: '60%',
+const iconProps = {
+  size: '80%',
   color: '#DD8836',
 }
 
@@ -13,7 +13,7 @@ const TogglePlay = ({ isPlaying, onClick }) => (
       className="TogglePlay__icon"
       onClick={onClick}
     >
-      {isPlaying ? (<FaStop {...childProps} />) : (<FaPlay {...childProps} />)}
+      {isPlaying ? (<MdStop {...iconProps} />) : (<MdPlayArrow {...iconProps} />)}
     </div>
   </div>
 )

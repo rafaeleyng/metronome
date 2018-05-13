@@ -1,0 +1,21 @@
+.InlineSlider {
+  display: inline-block;
+}
+
+.InlineSlider .rc-slider-rail {
+  background-color: #919191;
+  height: 3px;
+}
+
+.InlineSlider .rc-slider-track {
+  background-color: #DC8836;
+  height: 3px;
+}
+
+.InlineSlider .rc-slider-handle {
+  border: 0;
+}
+
+.InlineSlider .rc-slider-disabled {
+  background-color: transparent;
+}
