@@ -10,13 +10,23 @@ import RepeatSingleBarStrategy from '../../../metronome/barExecutionStrategies/R
 
 import startMetronome from '../../../metronome/startMetronome'
 
+import PreferencesService, { PREFERENCE_TYPE_INT } from '../../../services/PreferencesService'
+
+const preferencesService = new PreferencesService('metronome')
+const PREFERENCE_BEATS = preferencesService.buildPreference('beats', PREFERENCE_TYPE_INT)
+const PREFERENCE_TEMPO = preferencesService.buildPreference('tempo', PREFERENCE_TYPE_INT)
+
 class Metronome extends Component {
-  state = {
-    currentBeat: null,
-    isPlaying: false,
-    beats: 4,
-    tempo: 120,
-    stopMetronome: null,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      currentBeat: null,
+      isPlaying: false,
+      beats: preferencesService.get(PREFERENCE_BEATS) || 4,
+      tempo: preferencesService.get(PREFERENCE_TEMPO) || 120,
+      stopMetronome: null,
+    }
   }
 
   componentWillUnmount() {
@@ -55,6 +65,7 @@ class Metronome extends Component {
     this.setState({
       beats,
     }, () => {
+      preferencesService.set(PREFERENCE_BEATS, beats)
       if (this.state.isPlaying) {
         this.restartMetronome()
       }
@@ -65,6 +76,7 @@ class Metronome extends Component {
     this.setState({
       tempo,
     }, () => {
+      preferencesService.set(PREFERENCE_TEMPO, tempo)
       if (this.state.isPlaying) {
         this.restartMetronome()
       }

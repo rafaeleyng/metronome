@@ -4,9 +4,9 @@ describe('barsGroupsExpander', () => {
   it('should expand grouped bars to full representation', () => {
     // arrange
     const barGroups = [
-      { qty: 1, beats: 3, tempo: 120 },
-      { qty: 4, beats: 2, tempo: 90 },
-      { qty: 3, beats: 5, tempo: 160 },
+      { quantity: 1, beats: 3, tempo: 120 },
+      { quantity: 4, beats: 2, tempo: 90 },
+      { quantity: 3, beats: 5, tempo: 160 },
     ]
 
     const expanded = barsGroupsExpander(barGroups)

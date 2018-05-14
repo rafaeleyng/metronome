@@ -5,8 +5,13 @@ import { MdRepeatOne, MdQueueMusic } from 'react-icons/lib/md'
 import Metronome from './Metronome'
 import Score from './Score'
 
-const METRONOME = Symbol('metronome')
-const SCORE = Symbol('score')
+import PreferencesService, { PREFERENCE_TYPE_STR } from '../../services/PreferencesService'
+
+const preferencesService = new PreferencesService('app')
+const PREFERENCE_MODE = preferencesService.buildPreference('mode', PREFERENCE_TYPE_STR)
+
+const METRONOME = 'metronome'
+const SCORE = 'score'
 
 const selectedIconProps = {
   size: 40,
@@ -19,17 +24,21 @@ const unselectedIconProps = {
 }
 
 class App extends Component {
-  state = {
-    // mode: METRONOME,
-    mode: SCORE,
+  constructor(props) {
+    super(props)
+    this.state = {
+      mode: preferencesService.get(PREFERENCE_MODE) || METRONOME,
+    }
   }
 
   modeMetronome = () => {
     this.setState({ mode: METRONOME })
+    preferencesService.set(PREFERENCE_MODE, METRONOME)
   }
 
   modeScore = () => {
     this.setState({ mode: SCORE })
+    preferencesService.set(PREFERENCE_MODE, SCORE)
   }
 
   render() {
