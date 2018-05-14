@@ -12,6 +12,11 @@ import barsGroupsExpander from '../../../metronome/barExecutionStrategies/PlaySc
 
 import startMetronome from '../../../metronome/startMetronome'
 
+import PreferencesService, { PREFERENCE_TYPE_OBJ } from '../../../services/PreferencesService'
+
+const preferencesService = new PreferencesService('score')
+const PREFERENCE_GROUPS = preferencesService.buildPreference('groups', PREFERENCE_TYPE_OBJ)
+
 const iconStyle = {
   size: 30,
   color: '#919191',
@@ -20,7 +25,7 @@ const iconStyle = {
 const constDefaultBarsGroupValues = {
   beats: 4,
   tempo: 120,
-  qty: 1,
+  quantity: 1,
 }
 
 const newGroup = () => ({
@@ -29,12 +34,15 @@ const newGroup = () => ({
 })
 
 class Score extends Component {
-  state = {
-    bars: [],
-    currentBeat: null,
-    currentBar: 0,
-    groups: [newGroup()],
-    isPlaying: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      bars: [],
+      currentBeat: null,
+      currentBar: 0,
+      groups: preferencesService.get(PREFERENCE_GROUPS) || [newGroup()],
+      isPlaying: false,
+    }
   }
 
   startMetronome() {
@@ -94,38 +102,37 @@ class Score extends Component {
     })
   }
 
-  handleAddGroup = () => {
-    const { groups } = this.state
+  applyMutationToGroups(mutationFn) {
+    const groups = mutationFn(this.state.groups)
     this.setState({
-      groups: [...groups, newGroup()],
+      groups,
+    }, () => {
+      preferencesService.set(PREFERENCE_GROUPS, groups)
     })
+  }
+
+  handleAddGroup = () => {
+    this.applyMutationToGroups(groups => [...groups, newGroup()])
   }
 
   handleRemoveGroup = (group) => {
     if (this.state.groups.length < 2) {
       return
     }
-    this.setState({
-      groups: this.state.groups.filter(g => g !== group),
-    })
+
+    this.applyMutationToGroups(groups => groups.filter(g => g !== group))
   }
 
-  handleChangeQty = (group, qty) => {
-    this.setState({
-      groups: this.state.groups.map(g => (g === group ? { ...g, qty } : g)),
-    })
+  handleChangeQuantity = (group, quantity) => {
+    this.applyMutationToGroups(groups => groups.map(g => (g === group ? { ...g, quantity } : g)))
   }
 
   handleChangeBeats = (group, beats) => {
-    this.setState({
-      groups: this.state.groups.map(g => (g === group ? { ...g, beats } : g)),
-    })
+    this.applyMutationToGroups(groups => groups.map(g => (g === group ? { ...g, beats } : g)))
   }
 
   handleChangeTempo = (group, tempo) => {
-    this.setState({
-      groups: this.state.groups.map(g => (g === group ? { ...g, tempo } : g)),
-    })
+    this.applyMutationToGroups(groups => groups.map(g => (g === group ? { ...g, tempo } : g)))
   }
 
   render() {
@@ -155,7 +162,7 @@ class Score extends Component {
             group={group}
             onChangeBeats={this.handleChangeBeats}
             onChangeTempo={this.handleChangeTempo}
-            onChangeQty={this.handleChangeQty}
+            onChangeQuantity={this.handleChangeQuantity}
             onRemove={onRemoveGroup}
           />))}
         </div>

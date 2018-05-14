@@ -19,7 +19,7 @@ class BarsGroup extends Component {
     group: PropTypes.object.isRequired,
     onRemove: PropTypes.func,
     onChangeBeats: PropTypes.func.isRequired,
-    onChangeQty: PropTypes.func.isRequired,
+    onChangeQuantity: PropTypes.func.isRequired,
     onChangeTempo: PropTypes.func.isRequired,
   }
 
@@ -32,9 +32,9 @@ class BarsGroup extends Component {
     onChangeBeats(group, beats)
   }
 
-  handleChangeQty = (qty) => {
-    const { onChangeQty, group } = this.props
-    onChangeQty(group, qty)
+  handleChangeQuantity = (quantity) => {
+    const { onChangeQuantity, group } = this.props
+    onChangeQuantity(group, quantity)
   }
 
   handleChangeTempo = (tempo) => {
@@ -48,10 +48,10 @@ class BarsGroup extends Component {
 
   render() {
     const { disabled, group, onRemove } = this.props
-    const { beats, tempo, qty } = group
+    const { beats, tempo, quantity } = group
 
     const styles = {
-      qty: {
+      quantity: {
         input: {
           color: '#DC8836',
           width: '80px',
@@ -80,14 +80,14 @@ class BarsGroup extends Component {
     return (
       <div className="BarsGroup">
         <NumericInput
-          className="BarsGroup__qty"
+          className="BarsGroup__quantity"
           min={1}
           max={99}
           strict
           mobile
-          onChange={this.handleChangeQty}
-          value={qty}
-          style={styles.qty}
+          onChange={this.handleChangeQuantity}
+          value={quantity}
+          style={styles.quantity}
           readOnly={disabled}
         />
         <InlineSlider
